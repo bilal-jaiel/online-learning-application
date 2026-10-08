@@ -50,7 +50,7 @@ Two constraints make it hard:
 - a global budget `B`, shared by all campaigns over the whole horizon;
 - a conflict graph: two incompatible campaigns (for example competing brands) cannot be played in the same round.
 
-The goal is to maximise cumulative utility within the budget, that is, to keep the regret against the best fixed policy (the oracle) as small as possible.
+The goal is to maximise cumulative utility within the budget. Regret is measured against the best fixed bid or campaign set per round (the oracle). This oracle ignores the budget, so it is an optimistic benchmark: no policy can actually reach it within B.
 
 ## Algorithms
 
@@ -133,7 +133,7 @@ Exp. 3: non-stationary<br>
 
 ### Takeaways
 
-1. Pacing decides the outcome. The budget-aware policies (Budgeted UCB1, primal-dual) collect two to five times more reward. Policies that ignore the budget exhaust it around round 1,100 and cannot bid afterwards, so their regret grows linearly from then on.
+1. Pacing decides the outcome. The budget-aware policies (Budgeted UCB1, primal-dual) collect two to five times more reward. Policies that ignore the budget exhaust it between rounds 900 and 1,100 and cannot bid afterwards, so their regret grows linearly from then on.
 2. Greedy under-explores. It locks onto low bids early, spends about 5 % of the budget and leaves most of the value unused.
 3. In a changing market, pacing still beats adaptation. Sliding-window and change-detection UCB spend the whole budget during the first phase, so detecting later shifts no longer helps them. Primal-dual has the lowest regret in every phase.
 
@@ -175,7 +175,7 @@ Figures and comparison tables are written to `results/`. A full run takes a few 
 ## Limitations
 
 - One simulation per configuration. Averaging over several seeds, with confidence intervals, would make the comparison more robust.
-- The multi-campaign policies can overshoot the budget by a fraction of a unit (spend of 1,000.1 to 1,000.3 for B = 1,000), because the last round's bids are not clipped to the remaining budget.
+- The multi-campaign policies can overshoot the budget by a fraction of a unit (spend of up to 1,000.3 for B = 1,000), because the last round's bids are not clipped to the remaining budget.
 - The non-stationary policies do not pace their spending. Combining a sliding window or change detection with primal-dual pacing is the natural next step.
 - Bids live on a grid of 11 values; continuous bidding would need a different family of algorithms.
 
